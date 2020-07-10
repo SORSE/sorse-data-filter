@@ -10,12 +10,6 @@ authors:
 {%- if person.orcid %}
       orcid: {{ person.orcid }} 
 {%- endif %}
-{%- if person.test %} 
-      bio: {{ person.test }} 
-{%- endif %}
-{%- if person.muh %} 
-      orcid: {{ person.muh }} 
-{%- endif %}
 {%- endfor %}
 {%- endif %}
 category: {{ contribution.contribution_type }}
