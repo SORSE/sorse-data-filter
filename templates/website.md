@@ -7,6 +7,9 @@ authors:
 {%- if person.affiliation %} 
       bio: {{ person.affiliation }} 
 {%- endif %}
+{%- if person.email %}
+      email: {{ person.email }}
+{%- endif %}
 {%- if person.orcid %}
       orcid: {{ person.orcid }} 
 {%- endif %}
