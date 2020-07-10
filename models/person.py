@@ -25,7 +25,6 @@ class Person(FilteredModel):
         email = None
         if email_agreement:
             parsed_email = to_str(json_content["email"])
-            print(f"received {parsed_email}")
             if parsed_email is not None and parsed_email.lower() == contact_email.lower():
                 email = contact_email
         return Person(
