@@ -1,8 +1,14 @@
 import os
-from typing import Iterable, Optional, Dict, Sequence, Union
+from typing import Iterable, Optional, Dict, Sequence
 
 import requests
 from dotenv import load_dotenv
+
+
+def to_str(value: str, default: Optional[str] = None) -> Optional[str]:
+    if value is None or "none" in value:
+        return default
+    return value
 
 
 def to_bool(value: str, default: bool = False) -> bool:
