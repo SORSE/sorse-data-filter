@@ -52,15 +52,17 @@ class Contribution(FilteredModel):
         else:
             extended_orcids = {}
 
+        # load answers to other questions
+        questionnaire = Questionnaire.from_json(questionnaire_whitelist, json_content)
+        # get contact email
+        contact_email = json_content["custom_fields"].get("Contact Email", None)
         # load authors and speakers
         persons = []
         authors = json_content["persons"]
         for author in authors:
-            person = Person.from_json(person_whitelist, author, extended_orcids)
+            person = Person.from_json(person_whitelist, author, extended_orcids, email_agreement=questionnaire.agreement_email_publication, contact_email=contact_email)
             if person is not None:
                 persons.append(person)
-        # load answers to other questions
-        questionnaire = Questionnaire.from_json(questionnaire_whitelist, json_content)
         return Contribution(
             id=json_content["id"],
             whitelist=whitelist,
@@ -68,7 +70,7 @@ class Contribution(FilteredModel):
             acceptance_date=None,
             persons=persons,
             questionnaire=questionnaire,
-            contact_email=None,
+            contact_email=contact_email,
             title=json_content["title"],
             content=json_content["content"]
         )

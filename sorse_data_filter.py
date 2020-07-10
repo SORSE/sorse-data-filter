@@ -1,6 +1,5 @@
 import json
 import os
-from typing import Sequence
 
 import click
 import yaml
