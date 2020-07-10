@@ -16,10 +16,10 @@ load_dotenv()
 @click.argument("output_path", type=click.Path())
 @click.option('--workflow', type=click.Choice(['website'], case_sensitive=False))
 def filter_data(input, workflow, output_path):
-    click.echo(f"starting process for {workflow}")
-    click.echo(f"saving data to {output_path}")
     if workflow is None:
         workflow = "website"
+    click.echo(f"starting process for {workflow}")
+    click.echo(f"saving data to {output_path}")
 
     workflow_data = None
     with open("workflows.yaml", "r") as stream:
