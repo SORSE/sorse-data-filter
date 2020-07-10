@@ -1,0 +1,27 @@
+website:
+  whitelist:
+    contribution:
+      - title
+      - content
+      - contribution_type
+      - persons:
+        - title
+        - affiliation
+        - first_name
+        - last_name
+        - orcid
+      - questionnaire:
+        - language
+        - prerequisite_knowledge
+        - contribution_questions:
+          - panelists
+          - installation_instructions
+          - license
+          - maximum_number_participants
+  output_type: md
+  output_format_string: "{}/event-{}.{}"
+  output_format_arguments:
+    - contribution.contribution_type
+    - contribution.id
+    - output_type
+  output_template: website.md
