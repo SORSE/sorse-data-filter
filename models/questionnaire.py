@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Sequence,  ClassVar
 
 from models import FilteredModel
-from utils import to_bool, find_custom_fields_key
+from utils import to_bool, find_custom_fields_key, to_str
 
 
 @dataclass
@@ -38,14 +38,14 @@ class Questionnaire(FilteredModel):
             agreement_cc_by_publication=to_bool(custom_fields.get(find_custom_fields_key(keys, "CC-BY 4.0"), None)),
             agreement_email_contact=to_bool(custom_fields.get(find_custom_fields_key(keys, "agree to be contacted by email"), None)),
             agreement_email_publication=to_bool(custom_fields.get(find_custom_fields_key(keys, "contact email is published"), None)),
-            language=custom_fields.get("Language", None),
+            language=to_str(custom_fields.get("Language", None)),
             topic_bazaar=to_bool(custom_fields.get("Topic Bazaar", None)),
-            prerequisite_knowledge=custom_fields.get("Prerequisite knowledge", None),
-            relevance=custom_fields.get("Relevance to the community", None),
+            prerequisite_knowledge=to_str(custom_fields.get("Prerequisite knowledge", None)),
+            relevance=to_str(custom_fields.get("Relevance to the community", None)),
             earliest_delivery=custom_fields.get("Earliest delivery date", None),
             latest_delivery=custom_fields.get("Latest delivery date", None),
             multiple_deliveries=to_bool(custom_fields.get("Multiple deliveries", None)),
-            main_author_job_title=custom_fields.get("Main author job title", None),
+            main_author_job_title=to_str(custom_fields.get("Main author job title", None)),
             diversity_questions=diversity_questions,
             contribution_questions=contribution_questions,
         )
@@ -80,11 +80,11 @@ class DiversityQuestions(FilteredModel):
     def from_json(cls, whitelist: Sequence, json_content):
         return DiversityQuestions(
             whitelist=whitelist,
-            age=json_content.get("Age", None),
-            under_representation=json_content.get("Under-representation", None),
-            first_time_presenter=json_content.get("First time presenter", None),
-            pronouns=json_content.get("Pronouns", None),
-            gender=json_content.get("Gender", None),
+            age=to_str(json_content.get("Age", None)),
+            under_representation=to_str(json_content.get("Under-representation", None)),
+            first_time_presenter=to_str(json_content.get("First time presenter", None)),
+            pronouns=to_str(json_content.get("Pronouns", None)),
+            gender=to_str(json_content.get("Gender", None)),
         )
 
     def __repr__(self):
@@ -124,7 +124,7 @@ class TalkContribution(ContributionQuestions):
     def from_json(cls, whitelist: Sequence, json_content):
         return TalkContribution(
             whitelist=whitelist,
-            length=json_content.get("[TALKS ONLY] Length of talk", None),
+            length=to_str(json_content.get("[TALKS ONLY] Length of talk", None)),
             mentoring=to_bool(json_content.get("[TALKS ONLY] Mentoring", None)),
             agreement_streaming=to_bool(json_content.get("[TALKS ONLY] Streaming", None)),
             blog_post=to_bool(json_content.get("[TALKS ONLY] Blog post", None)),
@@ -149,7 +149,7 @@ class PanelContribution(ContributionQuestions):
     def from_json(cls, whitelist: Sequence, json_content):
         return PanelContribution(
             whitelist=whitelist,
-            panelists=json_content.get("[PANELS ONLY] Panelists", None),
+            panelists=to_str(json_content.get("[PANELS ONLY] Panelists", None)),
             advertising=to_bool(json_content.get("[PANELS ONLY] Panelist advertising", None)),
         )
 
@@ -184,8 +184,8 @@ class SoftwareContribution(ContributionQuestions):
     def from_json(cls, whitelist: Sequence, json_content):
         return SoftwareContribution(
             whitelist=whitelist,
-            installation_instructions=json_content.get("[SOFTWARE DEMOS ONLY] Installation instructions", None),
-            license=json_content.get("[SOFTWARE DEMOS ONLY] Software licence", None),
+            installation_instructions=to_str(json_content.get("[SOFTWARE DEMOS ONLY] Installation instructions", None)),
+            license=to_str(json_content.get("[SOFTWARE DEMOS ONLY] Software licence", None)),
         )
 
     def __repr__(self):
@@ -207,7 +207,7 @@ class WorkshopContriubtion(ContributionQuestions):
             whitelist=whitelist,
             maximum_number_participants=json_content.get("[WORKSHOPS ONLY] Maximum number of attendees", None),
             helpers=to_bool(json_content.get("[WORKSHOPS ONLY] Helpers", None)),
-            delivery=json_content.get("[WORKSHOPS ONLY] Delivery", None),
+            delivery=to_str(json_content.get("[WORKSHOPS ONLY] Delivery", None)),
         )
 
     def __repr__(self):

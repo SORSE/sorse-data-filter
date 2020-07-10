@@ -29,13 +29,13 @@ class Person(FilteredModel):
                 email = contact_email
         return Person(
             whitelist=whitelist,
-            first_name=json_content["first_name"],
-            last_name=json_content["last_name"],
-            affiliation=json_content["affiliation"],
-            address=json_content["address"],
+            first_name=to_str(json_content["first_name"]),
+            last_name=to_str(json_content["last_name"]),
+            affiliation=to_str(json_content["affiliation"]),
+            address=to_str(json_content["address"]),
             author_type=json_content["author_type"],
             is_speaker=to_bool(json_content["is_speaker"]),
-            title=json_content["title"],
+            title=to_str(json_content["title"]),
             orcid=orcid_id,
             email=email
         )
