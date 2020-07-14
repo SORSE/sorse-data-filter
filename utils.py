@@ -44,7 +44,8 @@ def load_orcid_information(orcids: Iterable[str]) -> Dict[str, Dict]:
     return result
 
 
-def search_matching_orcid(first_name: str, last_name: str, orcids: Dict[str, Dict]) -> Optional[str]:
+def search_matching_orcid(
+        first_name: str, last_name: str, orcids: Dict[str, Dict]) -> Optional[str]:
     first_name = first_name.lower()
     last_name = last_name.lower()
     for orcid_id, orcid_information in orcids.items():
@@ -66,8 +67,8 @@ class OrcidAPI:
     accept_type: str = "application/json"
 
     def __init__(self):
-        self._access_token: str = None
-        self._token_type: str = None
+        self._access_token: Optional[str] = None
+        self._token_type: Optional[str] = None
 
     @property
     def token_type(self) -> str:
@@ -98,7 +99,9 @@ class OrcidAPI:
         endpoint = "/personal-details"
         headers = {'Accept': self.accept_type,
                    'Authorization': f'{self.token_type} {self.access_token}'}
-        r = requests.get(f"https://pub.orcid.org/{self.api_version}/{orcid_id}{endpoint}", headers=headers)
+        r = requests.get(
+            f"https://pub.orcid.org/{self.api_version}/{orcid_id}{endpoint}",
+            headers=headers)
         return r.json()
 
 
