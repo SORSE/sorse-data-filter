@@ -3,7 +3,7 @@ title: {{ contribution.title }}
 {%- if contribution.persons|length > 0 %}
 authors:
 {%- for person in contribution.persons %}
-    - {%- if speaker == nil and person.is_speaker -%}{% assign speaker = person %}&speaker {%- endif -%}name: {{ person.title }} {{ person.first_name }} {{ person.last_name }}
+    - {% if speaker == nil and person.is_speaker -%}{% set speaker = person %}&speaker {% endif -%}name: {{ person.title }} {{ person.first_name }} {{ person.last_name }}
 {%- if person.affiliation %} 
       bio: {{ person.affiliation }} 
 {%- endif %}
@@ -13,9 +13,9 @@ authors:
 {%- if person.orcid %}
       orcid: {{ person.orcid }} 
 {%- endif %}
-{%- if person.is_speaker -%}
+{%- if person.is_speaker %}
       is_speaker: true
-{%- endif -%}
+{%- endif %}
 {%- endfor %}
 author: *speaker
 {%- endif %}
