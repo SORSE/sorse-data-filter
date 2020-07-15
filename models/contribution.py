@@ -9,6 +9,27 @@ from models.person import Person
 from models.questionnaire import Questionnaire
 from utils import load_orcid_information, find_custom_fields_key
 
+ORCID_ID_PATTERN = re.compile(r"\d{4}-\d{4}-\d{4}-\d{4}")
+
+
+def load_orcid_data(orcid_string):
+    matched_orcids = ORCID_ID_PATTERN.findall(orcid_string)
+    return load_orcid_information(matched_orcids)
+
+
+def extract_whitelists(whitelist):
+    person_whitelist = None
+    questionnaire_whitelist = None
+    for element in whitelist:
+        if isinstance(element, dict):
+            if "persons" in element:
+                person_whitelist = element["persons"]
+                continue
+            if "questionnaire" in element:
+                questionnaire_whitelist = element["questionnaire"]
+                continue
+    return person_whitelist, questionnaire_whitelist
+
 
 @dataclass
 class Contribution(FilteredModel):
@@ -27,23 +48,6 @@ class Contribution(FilteredModel):
 
     @classmethod
     def from_json(cls, whitelist, json_content):
-        def extract_whitelists(whitelist):
-            person_whitelist = None
-            questionnaire_whitelist = None
-            for element in whitelist:
-                if isinstance(element, dict):
-                    if "persons" in element:
-                        person_whitelist = element["persons"]
-                        continue
-                    if "questionnaire" in element:
-                        questionnaire_whitelist = element["questionnaire"]
-                        continue
-            return person_whitelist, questionnaire_whitelist
-
-        def load_orcid_data(orcid_string):
-            orcid_pattern = re.compile(r"\d{4}-\d{4}-\d{4}-\d{4}")
-            matched_orcids = orcid_pattern.findall(orcid_string)
-            return load_orcid_information(matched_orcids)
         person_whitelist, questionnaire_whitelist = extract_whitelists(whitelist)
         custum_field_keys = list(json_content["custom_fields"].keys())
         extended_orcids = load_orcid_data(json_content["custom_fields"].get(

@@ -48,12 +48,14 @@ def load_orcid_information(orcids: Iterable[str]) -> Dict[str, Dict]:
     return result
 
 
+def check_name(first, last, to_check):
+    if first in to_check and last in to_check:
+        return True
+    return False
+
+
 def search_matching_orcid(
         first_name: str, last_name: str, orcids: Dict[str, Dict]) -> Optional[str]:
-    def check_name(first, last, to_check):
-        if first in to_check and last in to_check:
-            return True
-        return False
     first_name = first_name.lower()
     last_name = last_name.lower()
     for orcid_id, orcid_information in orcids.items():
