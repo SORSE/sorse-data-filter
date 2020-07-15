@@ -36,9 +36,8 @@ def flatten_custom_fields(elements: Sequence[Dict]) -> Dict:
 
 def load_orcid_information(orcids: Iterable[str]) -> Dict[str, Dict]:
     result = {}
-    orcid_format_string = "https://orcid.org/{}/person.json"
     for orcid in orcids:
-        response = requests.get(orcid_format_string.format(orcid))
+        response = requests.get(f"https://orcid.org/{orcid}/person.json")
         if response.status_code == 200:
             orcid_data = response.json()
             result[orcid] = {
