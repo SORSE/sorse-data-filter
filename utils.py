@@ -1,8 +1,6 @@
-import os
 from typing import Iterable, Optional, Dict, Sequence
 
 import requests
-from dotenv import load_dotenv
 
 
 def to_str(value: str, default: Optional[str] = None) -> Optional[str]:
@@ -38,74 +36,31 @@ def flatten_custom_fields(elements: Sequence[Dict]) -> Dict:
 
 def load_orcid_information(orcids: Iterable[str]) -> Dict[str, Dict]:
     result = {}
-    orcid_api = OrcidAPI()
+    orcid_format_string = "https://orcid.org/{}/person.json"
     for orcid in orcids:
-        result[orcid] = orcid_api.personal_details(orcid_id=orcid)
+        response = requests.get(orcid_format_string.format(orcid))
+        if response.status_code == 200:
+            orcid_data = response.json()
+            result[orcid] = {
+                "displayName": orcid_data["displayName"],
+                "publicGroupedOtherNames": orcid_data["publicGroupedOtherNames"]
+            }
     return result
 
 
 def search_matching_orcid(
         first_name: str, last_name: str, orcids: Dict[str, Dict]) -> Optional[str]:
+    def check_name(first, last, to_check):
+        if first in to_check and last in to_check:
+            return True
+        return False
     first_name = first_name.lower()
     last_name = last_name.lower()
     for orcid_id, orcid_information in orcids.items():
-        orcid_name = orcid_information["name"]
-        if first_name in orcid_name["given-names"]["value"].lower() and \
-                last_name in orcid_name["family-name"]["value"].lower():
+        if check_name(first_name, last_name, orcid_information["displayName"].lower()):
             return orcid_id
-        # also check other names
-        other_names = orcid_information["other-names"]["other-name"]
-        for other_name in other_names:
-            name = other_name["content"].lower()
-            if first_name in name and last_name in name:
+        # also check for other names
+        for key in orcid_information["publicGroupedOtherNames"]:
+            if check_name(first_name, last_name, key.lower()):
                 return orcid_id
     return None
-
-
-class OrcidAPI:
-    api_version: str = "v2.1"
-    accept_type: str = "application/json"
-
-    def __init__(self):
-        self._access_token: Optional[str] = None
-        self._token_type: Optional[str] = None
-
-    @property
-    def token_type(self) -> str:
-        if self._token_type is None:
-            self._initialize_access_token()
-        return self._token_type
-
-    @property
-    def access_token(self) -> str:
-        if self._access_token is None:
-            self._initialize_access_token()
-        return self._access_token
-
-    def _initialize_access_token(self):
-        assert self._access_token is None and self._token_type is None
-        data = {
-            "client_id": os.getenv("ORCID_CLIENT_ID"),
-            "client_secret": os.getenv("ORCID_CLIENT_SECRET"),
-            "grant_type": "client_credentials",
-            "scope": "/read-public"
-        }
-        r = requests.post("https://orcid.org/oauth/token", data=data)
-        result = r.json()
-        self._access_token = result["access_token"]
-        self._token_type = result["token_type"]
-
-    def personal_details(self, orcid_id: str) -> Dict:
-        endpoint = "/personal-details"
-        headers = {'Accept': self.accept_type,
-                   'Authorization': f'{self.token_type} {self.access_token}'}
-        r = requests.get(
-            f"https://pub.orcid.org/{self.api_version}/{orcid_id}{endpoint}",
-            headers=headers)
-        return r.json()
-
-
-if __name__ == "__main__":
-    load_dotenv()
-    orcid = OrcidAPI()
-    orcid.personal_details(orcid_id="0000-0002-8034-8837")

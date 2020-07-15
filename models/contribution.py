@@ -1,4 +1,3 @@
-import os
 import re
 from dataclasses import dataclass
 from typing import List
@@ -8,7 +7,7 @@ import jinja2
 from models import FilteredModel
 from models.person import Person
 from models.questionnaire import Questionnaire
-from utils import load_orcid_information, find_custom_fields_key, to_bool
+from utils import load_orcid_information, find_custom_fields_key
 
 
 @dataclass
@@ -40,17 +39,14 @@ class Contribution(FilteredModel):
                         questionnaire_whitelist = element["questionnaire"]
                         continue
             return person_whitelist, questionnaire_whitelist
-        person_whitelist, questionnaire_whitelist = extract_whitelists(whitelist)
 
-        # load orcid information
-        if to_bool(os.getenv("ORCID_ACTIVATED")):
-            # TODO: does it work??
-            orcids = json_content["custom_fields"].get(find_custom_fields_key(json_content["custom_fields"].keys(), "ORCID"), "")
+        def load_orcid_data(orcid_string):
             orcid_pattern = re.compile("\d{4}-\d{4}-\d{4}-\d{4}")
-            matched_orcids = orcid_pattern.findall(orcids)
-            extended_orcids = load_orcid_information(matched_orcids)
-        else:
-            extended_orcids = {}
+            matched_orcids = orcid_pattern.findall(orcid_string)
+            return load_orcid_information(matched_orcids)
+        person_whitelist, questionnaire_whitelist = extract_whitelists(whitelist)
+        custum_field_keys = list(json_content["custom_fields"].keys())
+        extended_orcids = load_orcid_data(json_content["custom_fields"].get(find_custom_fields_key(custum_field_keys, "ORCID"), ""))
 
         # load answers to other questions
         questionnaire = Questionnaire.from_json(questionnaire_whitelist, json_content)
@@ -60,7 +56,12 @@ class Contribution(FilteredModel):
         persons = []
         authors = json_content["persons"]
         for author in authors:
-            person = Person.from_json(person_whitelist, author, extended_orcids, email_agreement=questionnaire.agreement_email_publication, contact_email=contact_email)
+            person = Person.from_json(
+                whitelist=person_whitelist,
+                json_content=author,
+                orcids=extended_orcids,
+                email_agreement=questionnaire.agreement_email_publication,
+                contact_email=contact_email)
             if person is not None:
                 persons.append(person)
         return Contribution(
