@@ -11,6 +11,7 @@ website:
         - last_name
         - orcid
         - email
+        - is_speaker
       - questionnaire:
         - language
         - prerequisite_knowledge
