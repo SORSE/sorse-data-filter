@@ -1,5 +1,5 @@
 website:
-  whitelist:
+  allow_list:
     contribution:
       - title
       - content

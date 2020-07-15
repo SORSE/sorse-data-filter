@@ -24,15 +24,15 @@ class Questionnaire(FilteredModel):
     contribution_questions: "ContributionQuestions"
 
     @classmethod
-    def from_json(cls, whitelist: Sequence, json_content):
+    def from_json(cls, allow_list: Sequence, json_content):
         custom_fields = json_content["custom_fields"]
         # load contents of diversity  questions
-        diversity_questions = DiversityQuestions.from_json(whitelist, custom_fields)
+        diversity_questions = DiversityQuestions.from_json(allow_list, custom_fields)
         # load contribution questions
-        contribution_questions = contribution_type_map.get(json_content["submitted_contrib_type"]["name"]).from_json(whitelist, custom_fields)
+        contribution_questions = contribution_type_map.get(json_content["submitted_contrib_type"]["name"]).from_json(allow_list, custom_fields)
         keys = list(custom_fields.keys())
         return Questionnaire(
-            whitelist=whitelist,
+            allow_list=allow_list,
             agreement_zenodo_publication=to_bool(custom_fields.get(find_custom_fields_key(keys, "Zenodo"), None)),
             agreement_recording_publication=to_bool(custom_fields.get(find_custom_fields_key(keys, "recording published"), None)),
             agreement_cc_by_publication=to_bool(custom_fields.get(find_custom_fields_key(keys, "CC-BY 4.0"), None)),
@@ -77,9 +77,9 @@ class DiversityQuestions(FilteredModel):
     gender: str
 
     @classmethod
-    def from_json(cls, whitelist: Sequence, json_content):
+    def from_json(cls, allow_list: Sequence, json_content):
         return DiversityQuestions(
-            whitelist=whitelist,
+            allow_list=allow_list,
             age=to_str(json_content.get("Age", None)),
             under_representation=to_str(json_content.get("Under-representation", None)),
             first_time_presenter=to_str(json_content.get("First time presenter", None)),
@@ -100,7 +100,7 @@ class ContributionQuestions(FilteredModel):
 
     def to_json(self):
         result = {}
-        for elem in self.whitelist:
+        for elem in self.allow_list:
             if isinstance(elem, str):
                 try:
                     value = self.__getattribute__(elem)
@@ -121,9 +121,9 @@ class TalkContribution(ContributionQuestions):
     contribution_type = "talk"
 
     @classmethod
-    def from_json(cls, whitelist: Sequence, json_content):
+    def from_json(cls, allow_list: Sequence, json_content):
         return TalkContribution(
-            whitelist=whitelist,
+            allow_list=allow_list,
             length=to_str(json_content.get("[TALKS ONLY] Length of talk", None)),
             mentoring=to_bool(json_content.get("[TALKS ONLY] Mentoring", None)),
             agreement_streaming=to_bool(json_content.get("[TALKS ONLY] Streaming", None)),
@@ -146,9 +146,9 @@ class PanelContribution(ContributionQuestions):
     contribution_type = "panel"
 
     @classmethod
-    def from_json(cls, whitelist: Sequence, json_content):
+    def from_json(cls, allow_list: Sequence, json_content):
         return PanelContribution(
-            whitelist=whitelist,
+            allow_list=allow_list,
             panelists=to_str(json_content.get("[PANELS ONLY] Panelists", None)),
             advertising=to_bool(json_content.get("[PANELS ONLY] Panelist advertising", None)),
         )
@@ -164,14 +164,14 @@ class PosterContribution(ContributionQuestions):
     contribution_type = "poster"
 
     @classmethod
-    def from_json(cls, whitelist: Sequence, json_content):
+    def from_json(cls, allow_list: Sequence, json_content):
         return PosterContribution(
-            whitelist=whitelist,
+            allow_list=allow_list,
             mentoring=to_bool(json_content.get("[POSTERS ONLY] Mentoring", None)),
         )
 
     def __repr__(self):
-        return  f"{self.__class__.__name__}(mentoring='{self.mentoring}')"
+        return f"{self.__class__.__name__}(mentoring='{self.mentoring}')"
 
 
 @dataclass
@@ -181,9 +181,9 @@ class SoftwareContribution(ContributionQuestions):
     contribution_type = "software"
 
     @classmethod
-    def from_json(cls, whitelist: Sequence, json_content):
+    def from_json(cls, allow_list: Sequence, json_content):
         return SoftwareContribution(
-            whitelist=whitelist,
+            allow_list=allow_list,
             installation_instructions=to_str(json_content.get("[SOFTWARE DEMOS ONLY] Installation instructions", None)),
             license=to_str(json_content.get("[SOFTWARE DEMOS ONLY] Software licence", None)),
         )
@@ -202,9 +202,9 @@ class WorkshopContriubtion(ContributionQuestions):
     contribution_type = "workshop"
 
     @classmethod
-    def from_json(cls, whitelist: Sequence, json_content):
+    def from_json(cls, allow_list: Sequence, json_content):
         return WorkshopContriubtion(
-            whitelist=whitelist,
+            allow_list=allow_list,
             maximum_number_participants=json_content.get("[WORKSHOPS ONLY] Maximum number of attendees", None),
             helpers=to_bool(json_content.get("[WORKSHOPS ONLY] Helpers", None)),
             delivery=to_str(json_content.get("[WORKSHOPS ONLY] Delivery", None)),
