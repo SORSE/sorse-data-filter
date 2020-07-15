@@ -41,12 +41,13 @@ class Contribution(FilteredModel):
             return person_whitelist, questionnaire_whitelist
 
         def load_orcid_data(orcid_string):
-            orcid_pattern = re.compile("\d{4}-\d{4}-\d{4}-\d{4}")
+            orcid_pattern = re.compile(r"\d{4}-\d{4}-\d{4}-\d{4}")
             matched_orcids = orcid_pattern.findall(orcid_string)
             return load_orcid_information(matched_orcids)
         person_whitelist, questionnaire_whitelist = extract_whitelists(whitelist)
         custum_field_keys = list(json_content["custom_fields"].keys())
-        extended_orcids = load_orcid_data(json_content["custom_fields"].get(find_custom_fields_key(custum_field_keys, "ORCID"), ""))
+        extended_orcids = load_orcid_data(json_content["custom_fields"].get(
+            find_custom_fields_key(custum_field_keys, "ORCID"), ""))
 
         # load answers to other questions
         questionnaire = Questionnaire.from_json(questionnaire_whitelist, json_content)
