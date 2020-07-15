@@ -46,7 +46,8 @@ class Contribution(FilteredModel):
             return load_orcid_information(matched_orcids)
         person_whitelist, questionnaire_whitelist = extract_whitelists(whitelist)
         custum_field_keys = list(json_content["custom_fields"].keys())
-        extended_orcids = load_orcid_data(json_content["custom_fields"].get(find_custom_fields_key(custum_field_keys, "ORCID"), ""))
+        extended_orcids = load_orcid_data(json_content["custom_fields"].get(
+            find_custom_fields_key(custum_field_keys, "ORCID"), ""))
 
         # load answers to other questions
         questionnaire = Questionnaire.from_json(questionnaire_whitelist, json_content)
