@@ -1,4 +1,7 @@
 website:
+  filter:
+    contribution:
+      state: accepted
   allow_list:
     contribution:
       - title
