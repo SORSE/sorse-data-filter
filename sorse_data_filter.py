@@ -52,22 +52,36 @@ def filter_data(input, workflow, output_path):
     workflow_data = load_workflow_data(workflow)
     json_data = json.load(input)
     abstracts = json_data["abstracts"]
+    workflow_filter = workflow_data["filter"]
+    assert isinstance(workflow_filter, dict)
     for abstract in abstracts:
         abstract["custom_fields"] = flatten_custom_fields(abstract["custom_fields"])
         contribution = Contribution.from_json(
             workflow_data["allow_list"]["contribution"], abstract)
-        format_parameters = [
-            traverse_into(
-                parameter.split("."),
-                contribution=contribution,
-                output_type=workflow_data["output_type"])
-            for parameter in workflow_data["output_format_arguments"]]
-        output_file = os.path.join(output_path, workflow_data["output_format_string"].format(*format_parameters))
-        # prepare output path
-        os.makedirs(os.path.dirname(output_file), exist_ok=True)
-        with open(output_file, "w") as output:
-            output.write(contribution.to_md(template=workflow_data["output_template"]))
-            click.echo(f"created file at {output_file}")
+        if check_filter(workflow_filter, contribution=contribution):
+            format_parameters = [
+                traverse_into(
+                    parameter.split("."),
+                    contribution=contribution,
+                    output_type=workflow_data["output_type"])
+                for parameter in workflow_data["output_format_arguments"]]
+            output_file = os.path.join(output_path, workflow_data["output_format_string"].format(*format_parameters))
+            # prepare output path
+            os.makedirs(os.path.dirname(output_file), exist_ok=True)
+            with open(output_file, "w") as output:
+                output.write(contribution.to_md(template=workflow_data["output_template"]))
+                click.echo(f"created file at {output_file}")
+
+
+def check_filter(filter, **namespace):
+    key = next(iter(filter.keys()))
+    head = namespace[key]
+    for key, value in filter[key].items():
+        if isinstance(value, dict):
+            head = getattr(head, key)
+        else:
+            return getattr(head, key) == value
+    return False
 
 
 def traverse_into(name, **namespace):

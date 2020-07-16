@@ -21,6 +21,9 @@ scheduling:
   output_type: spreadsheet
   output_template: scheduling.csv
 website:
+  filter:
+    contribution:
+      state: accepted
   allow_list:
     contribution:
       - title
@@ -43,7 +46,7 @@ website:
           - license
           - maximum_number_participants
   output_type: md
-  output_format_string: "{}/event-{}.{}"
+  output_format_string: "{}/event-{:03d}.{}"
   output_format_arguments:
     - contribution.contribution_type
     - contribution.id

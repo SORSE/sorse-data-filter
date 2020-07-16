@@ -39,6 +39,7 @@ class Contribution(FilteredModel):
     contact_email: str
     title: str
     content: str
+    state: str
 
     @property
     def contribution_type(self):
@@ -68,7 +69,7 @@ class Contribution(FilteredModel):
             if person is not None:
                 persons.append(person)
         return Contribution(
-            id=json_content["id"],
+            id=json_content["friendly_id"],
             allow_list=allow_list,
             submission_date=json_content["submitted_dt"],
             acceptance_date=None,
@@ -77,6 +78,7 @@ class Contribution(FilteredModel):
             contact_email=contact_email,
             title=json_content["title"],
             content=json_content["content"],
+            state=json_content["state"],
         )
 
     @classmethod
