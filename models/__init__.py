@@ -15,8 +15,7 @@ class FilteredModel:
         for elem in self.allow_list:
             if isinstance(elem, str):
                 value = self.__getattribute__(elem)
-                if value is not None:
-                    result[elem] = value
+                result[elem] = value
             elif isinstance(elem, dict):
                 key = next(iter(elem))
                 object = self.__getattribute__(key)

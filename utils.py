@@ -28,7 +28,7 @@ def to_float(value: str, default: float = 0.0) -> float:
 
 
 def to_str(value: str, default: Optional[str] = None) -> Optional[str]:
-    if value is None or "none" in value:
+    if value is None or "none" == value.lower():
         return default
     return value
 
