@@ -219,5 +219,6 @@ class WorkshopContriubtion(ContributionQuestions):
 
 contribution_type_map = {
     "Talk": TalkContribution,
-    "Software Demonstration": SoftwareContribution
+    "Software Demonstration": SoftwareContribution,
+    "Discussion Session": PanelContribution,
 }
