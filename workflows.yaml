@@ -4,6 +4,7 @@ scheduling:
       state: accepted
   allow_list:
     contribution:
+      - id
       - title
       - contribution_type
       - score

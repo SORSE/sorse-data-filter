@@ -1,4 +1,4 @@
-Link, Contribution type, Title, Score, Multiple deliveries, Earliest delivery, Latest delivery, Prerequisite knowledge, Language, Contact, Agreement: recording, Agreement: contact, Agreement: Zenodo, Agreement: CC-BY
-{% for abstract in contributions %}
-, {{ abstract.contribution_type }}, {{ abstract.title }}, {{ abstract.score }}, {{ abstract.questionnaire.multiple_deliveries }}, {{ abstract.questionnaire.earliest_delivery}}, {{ abstract.questionnaire.latest_delivery }}, {{ abstract.prerequisite_knowledge }}, {{ abstract.language }}, {{ abstract.contact_email }}, {{ abstract.questionnaire.agreement_recording_publication }}, {{ abstract.questionnaire.agreement_email_contact }}, {{ abstract.questionnaire.agreement_zenodo_publication }}, {{ abstract.questionnaire.agreement_cc_by_publication }}
-{% endfor %}
+ID, Link, Contribution type, Title, Score, Multiple deliveries, Earliest delivery, Latest delivery, Prerequisite knowledge, Language, Contact, Agreement: recording, Agreement: contact, Agreement: Zenodo, Agreement: CC-BY
+{%- for abstract in contributions %}
+{{ abstract.id }}, , {{ abstract.contribution_type }}, "{{ abstract.title }}", {{ abstract.score }}, {{ abstract.questionnaire.multiple_deliveries }}, {{ abstract.questionnaire.earliest_delivery}}, {{ abstract.questionnaire.latest_delivery }}, "{{ abstract.prerequisite_knowledge }}", {{ abstract.questionnaire.language }}, {{ abstract.contact_email }}, {{ abstract.questionnaire.agreement_recording_publication }}, {{ abstract.questionnaire.agreement_email_contact }}, {{ abstract.questionnaire.agreement_zenodo_publication }}, {{ abstract.questionnaire.agreement_cc_by_publication }}
+{%- endfor %}
