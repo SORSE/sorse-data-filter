@@ -8,7 +8,7 @@ def traverse_into(name, **namespace):
     head = namespace[name[0]]
     for path in name[1:]:
         if isinstance(head, dict):
-            head = head.get(path, None)
+            head = head[path]
         else:
             head = getattr(head, path)
     return head
