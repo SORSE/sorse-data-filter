@@ -1,10 +1,10 @@
 # sorse-data-filter
 
-Intention of this project is to manage visibility of data and automatise several
+This project manages the visibility of data and automatises several
 workflows centred around the abstract submission process of [SORSE – A Series of
 Online Research Softare Events](http://sorse.github.io). It is our aim to ensure
-that no connection between personal data and diversity information based on data
-exported from Indico can be derived.
+that no connection between personal data and diversity information can be derived
+from data exported from the [Indico](https://getindico.io) event management platform.
 
 Input of the tool is the exported data from the [Indico](https://getindico.io) system.
 Via a command line interface a user can pick one of the available workflows. For each
@@ -39,7 +39,7 @@ as well as diversity information.
 ## Configuring templates
 
 Templates that can be used are contained in the [templates folder](templates).
-For example the template for the website workflow is [website.md](templates/website.md).
+For example the template for the website workflow is [templates/website.md](templates/website.md).
 Available templating constructs can be found in the documentation of Jinja2. In
 principle, all different file formats can be configured with this templating engine.
 
