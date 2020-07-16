@@ -1,3 +1,23 @@
+scheduling:
+  filter:
+    contribution:
+      state: accepted
+  allow_list:
+    contribution:
+      - title
+      - contribution_type
+      - score
+      - contact_email
+      - questionnaire:
+          - language
+          - prerequisite_knowledge
+          - multiple_deliveries
+          - earliest_delivery
+          - latest_delivery
+          - agreement_zenodo_publication
+          - agreement_recording_publication
+          - agreement_cc_by_publication
+          - agreement_email_contact
 website:
   allow_list:
     contribution:
