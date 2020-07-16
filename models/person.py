@@ -18,7 +18,7 @@ class Person(FilteredModel):
     email: str
 
     @classmethod
-    def from_json(cls, whitelist, json_content, orcids: Dict[str, Dict], email_agreement=False, contact_email=None):
+    def from_json(cls, allow_list, json_content, orcids: Dict[str, Dict], email_agreement=False, contact_email=None):
         first_name = json_content["first_name"]
         last_name = json_content["last_name"]
         orcid_id = search_matching_orcid(first_name, last_name, orcids)
@@ -28,7 +28,7 @@ class Person(FilteredModel):
             if parsed_email is not None and parsed_email.lower() == contact_email.lower():
                 email = contact_email
         return Person(
-            whitelist=whitelist,
+            allow_list=allow_list,
             first_name=to_str(json_content["first_name"]),
             last_name=to_str(json_content["last_name"]),
             affiliation=to_str(json_content["affiliation"]),

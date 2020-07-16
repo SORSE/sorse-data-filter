@@ -30,7 +30,7 @@ def filter_data(input, workflow, output_path):
     for abstract in abstracts:
         abstract["custom_fields"] = flatten_custom_fields(abstract["custom_fields"])
         contribution = Contribution.from_json(
-            workflow_data["whitelist"]["contribution"], abstract)
+            workflow_data["allow_list"]["contribution"], abstract)
         format_parameters = [
             traverse_into(
                 parameter.split("."),

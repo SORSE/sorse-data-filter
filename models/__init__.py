@@ -4,15 +4,15 @@ from typing import Sequence
 
 @dataclass
 class FilteredModel:
-    whitelist: Sequence[str]
+    allow_list: Sequence[str]
 
     @classmethod
-    def from_json(cls, whitelist: Sequence, json_content):
+    def from_json(cls, allow_list: Sequence, json_content):
         raise NotImplementedError
 
     def to_json(self):
         result = {}
-        for elem in self.whitelist:
+        for elem in self.allow_list:
             if isinstance(elem, str):
                 value = self.__getattribute__(elem)
                 if value is not None:

@@ -17,18 +17,18 @@ def load_orcid_data(orcid_string):
     return load_orcid_information(matched_orcids)
 
 
-def extract_whitelists(whitelist):
-    person_whitelist = None
-    questionnaire_whitelist = None
-    for element in whitelist:
+def extract_allow_lists(allow_list):
+    person_allow_list = None
+    questionnaire_allow_list = None
+    for element in allow_list:
         if isinstance(element, dict):
             if "persons" in element:
-                person_whitelist = element["persons"]
+                person_allow_list = element["persons"]
                 continue
             if "questionnaire" in element:
-                questionnaire_whitelist = element["questionnaire"]
+                questionnaire_allow_list = element["questionnaire"]
                 continue
-    return person_whitelist, questionnaire_whitelist
+    return person_allow_list, questionnaire_allow_list
 
 
 @dataclass
@@ -47,14 +47,14 @@ class Contribution(FilteredModel):
         return self.questionnaire.contribution_questions.contribution_type
 
     @classmethod
-    def from_json(cls, whitelist, json_content):
-        person_whitelist, questionnaire_whitelist = extract_whitelists(whitelist)
+    def from_json(cls, allow_list, json_content):
+        person_allow_list, questionnaire_allow_list = extract_allow_lists(allow_list)
         custum_field_keys = list(json_content["custom_fields"].keys())
         extended_orcids = load_orcid_data(json_content["custom_fields"].get(
             find_custom_fields_key(custum_field_keys, "ORCID"), ""))
 
         # load answers to other questions
-        questionnaire = Questionnaire.from_json(questionnaire_whitelist, json_content)
+        questionnaire = Questionnaire.from_json(questionnaire_allow_list, json_content)
         # get contact email
         contact_email = json_content["custom_fields"].get("Contact Email", None)
         # load authors and speakers
@@ -62,7 +62,7 @@ class Contribution(FilteredModel):
         authors = json_content["persons"]
         for author in authors:
             person = Person.from_json(
-                whitelist=person_whitelist,
+                allow_list=person_allow_list,
                 json_content=author,
                 orcids=extended_orcids,
                 email_agreement=questionnaire.agreement_email_publication,
@@ -71,7 +71,7 @@ class Contribution(FilteredModel):
                 persons.append(person)
         return Contribution(
             id=json_content["id"],
-            whitelist=whitelist,
+            allow_list=allow_list,
             submission_date=json_content["submitted_dt"],
             acceptance_date=None,
             persons=persons,
