@@ -37,7 +37,7 @@ class Person(FilteredModel):
             is_speaker=to_bool(json_content["is_speaker"]),
             title=to_str(json_content["title"]),
             orcid=orcid_id,
-            email=email
+            email=email,
         )
 
     def __repr__(self):

@@ -7,7 +7,7 @@ mapping:
   "Multiple deliveries": contribution.questionnaire.multiple_deliveries
   "Earliest delivery": contribution.questionnaire.earliest_delivery
   "Latest delivery": contribution.questionnaire.latest_delivery
-  "Prerequisite knowledge": contribution.prerequisite_knowledge
+  "Prerequisite knowledge": contribution.questionnaire.prerequisite_knowledge
   "Language": contribution.questionnaire.language
   "Contact": contribution.contact_email
   "Agreement: recording": contribution.questionnaire.agreement_recording_publication
