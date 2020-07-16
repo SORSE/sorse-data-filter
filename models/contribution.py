@@ -41,6 +41,7 @@ class Contribution(FilteredModel):
     contact_email: str
     title: str
     content: str
+    state: str
 
     @property
     def contribution_type(self):
@@ -78,7 +79,8 @@ class Contribution(FilteredModel):
             questionnaire=questionnaire,
             contact_email=contact_email,
             title=json_content["title"],
-            content=json_content["content"]
+            content=json_content["content"],
+            state=json_content["state"]
         )
 
     def to_md(self, template=None):
