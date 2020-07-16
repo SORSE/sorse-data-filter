@@ -71,7 +71,7 @@ class Contribution(FilteredModel):
             if person is not None:
                 persons.append(person)
         return Contribution(
-            id=json_content["id"],
+            id=json_content["friendly_id"],
             allow_list=allow_list,
             submission_date=json_content["submitted_dt"],
             acceptance_date=None,
