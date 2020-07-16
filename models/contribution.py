@@ -78,7 +78,7 @@ class Contribution(FilteredModel):
                 json_content=author,
                 orcids=extended_orcids,
                 email_agreement=questionnaire.agreement_email_publication,
-                contact_email=contact_email),
+                contact_email=contact_email)
             if person is not None:
                 persons.append(person)
         return Contribution(
