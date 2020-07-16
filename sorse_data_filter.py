@@ -11,6 +11,34 @@ from utils import flatten_custom_fields
 load_dotenv()
 
 
+@click.group()
+def cli():
+    pass
+
+
+@click.command()
+@click.argument('input', type=click.File('rb'))
+@click.option('--workflow', type=click.Choice(['scheduling'], case_sensitive=False))
+def filter_multiple_data(input, workflow):
+    if workflow is None:
+        workflow = "scheduling"
+    click.echo(f"starting process for {workflow}")
+    click.echo(f"saving data to Google Drive")
+
+    workflow_data = load_workflow_data(workflow)
+    json_data = json.load(input)
+    abstracts = json_data["abstracts"]
+    workflow_filter = workflow_data["filter"]
+    contributions = []
+    for abstract in abstracts:
+        abstract["custom_fields"] = flatten_custom_fields(abstract["custom_fields"])
+        contribution = Contribution.from_json(
+            workflow_data["allow_list"]["contribution"], abstract)
+        if check_filter(workflow_filter, contribution=contribution):
+            contributions.append(contribution)
+    Contribution.to_spreadsheet(template=workflow_data["output_template"], contributions=abstracts)
+
+
 @click.command()
 @click.argument('input', type=click.File('rb'))
 @click.argument("output_path", type=click.Path())
@@ -21,10 +49,7 @@ def filter_data(input, workflow, output_path):
     click.echo(f"starting process for {workflow}")
     click.echo(f"saving data to {output_path}")
 
-    workflow_data = None
-    with open("workflows.yaml", "r") as stream:
-        config_data = yaml.safe_load(stream)
-        workflow_data = config_data.get(workflow)
+    workflow_data = load_workflow_data(workflow)
     json_data = json.load(input)
     abstracts = json_data["abstracts"]
     for abstract in abstracts:
@@ -52,5 +77,15 @@ def traverse_into(name, **namespace):
     return head
 
 
+def load_workflow_data(workflow):
+    with open("workflows.yaml", "r") as stream:
+        config_data = yaml.safe_load(stream)
+    return config_data.get(workflow)
+
+
+cli.add_command(filter_data)
+cli.add_command(filter_multiple_data)
+
+
 if __name__ == "__main__":
-    filter_data()
+    cli()

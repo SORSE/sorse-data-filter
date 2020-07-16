@@ -79,6 +79,12 @@ class Contribution(FilteredModel):
             content=json_content["content"],
         )
 
+    @classmethod
+    def to_spreadsheet(cls, template=None, contributions=None):
+        template_renderer = create_template(template)
+        data = template_renderer.render(contributions=contributions)
+        print(data)
+
     def to_md(self, template=None):
         contribution = self.to_json()
 
