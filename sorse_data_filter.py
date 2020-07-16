@@ -35,8 +35,8 @@ def filter_multiple_data(input, workflow):
         contribution = Contribution.from_json(
             workflow_data["allow_list"]["contribution"], abstract)
         if check_filter(workflow_filter, contribution=contribution):
-            contributions.append(contribution)
-    Contribution.to_spreadsheet(template=workflow_data["output_template"], contributions=abstracts)
+            contributions.append(contribution.to_json())
+    Contribution.to_spreadsheet(template=workflow_data["output_template"], contributions=contributions)
 
 
 @click.command()
