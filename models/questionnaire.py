@@ -29,7 +29,8 @@ class Questionnaire(FilteredModel):
         # load contents of diversity  questions
         diversity_questions = DiversityQuestions.from_json(allow_list, custom_fields)
         # load contribution questions
-        contribution_questions = contribution_type_map.get(json_content["submitted_contrib_type"]["name"]).from_json(allow_list, custom_fields)
+        contribution_questions = contribution_type_map.get(
+            json_content["submitted_contrib_type"]["name"]).from_json(allow_list, custom_fields)
         keys = list(custom_fields.keys())
         return Questionnaire(
             allow_list=allow_list,
@@ -218,4 +219,5 @@ class WorkshopContriubtion(ContributionQuestions):
 
 contribution_type_map = {
     "Talk": TalkContribution,
+    "Software Demonstration": SoftwareContribution
 }
