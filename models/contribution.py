@@ -2,6 +2,8 @@ import re
 from dataclasses import dataclass
 from typing import List
 
+import gspread
+
 from models import FilteredModel
 from models.person import Person
 from models.questionnaire import Questionnaire
@@ -81,13 +83,20 @@ class Contribution(FilteredModel):
             title=json_content["title"],
             content=json_content["content"],
             state=json_content["state"],
+            score=to_float(json_content["score"]),
         )
 
     @classmethod
     def to_spreadsheet(cls, template=None, contributions=None):
+        import csv
         template_renderer = create_template(template)
         data = template_renderer.render(contributions=contributions)
-        print(data)
+        gc = gspread.oauth()
+        sh = gc.create("Test", "1KLDFQ0VR7D16Ju-ir-TjlJXeNsqjNGge")
+        worksheet = sh.get_worksheet(0)
+        csv_reader = csv.reader(data.splitlines(), delimiter=',')
+        for row in csv_reader:
+            worksheet.append_row(row)
 
     def to_md(self, template=None):
         contribution = self.to_json()
