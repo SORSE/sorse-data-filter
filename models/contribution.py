@@ -5,7 +5,8 @@ from typing import List
 from models import FilteredModel
 from models.person import Person
 from models.questionnaire import Questionnaire
-from utils import load_orcid_information, find_custom_fields_key, create_template
+from utils import load_orcid_information, find_custom_fields_key, create_template, \
+    to_float
 
 ORCID_ID_PATTERN = re.compile(r"\d{4}-\d{4}-\d{4}-\d{4}")
 
@@ -40,6 +41,7 @@ class Contribution(FilteredModel):
     title: str
     content: str
     state: str
+    score: float
 
     @property
     def contribution_type(self):

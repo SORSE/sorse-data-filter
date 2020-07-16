@@ -11,6 +11,12 @@ def create_template(template_file):
     return template
 
 
+def to_float(value: str, default: float = 0.0) -> float:
+    if value is None:
+        return default
+    return float(value)
+
+
 def to_str(value: str, default: Optional[str] = None) -> Optional[str]:
     if value is None or "none" in value:
         return default
