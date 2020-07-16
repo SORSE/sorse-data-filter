@@ -6,7 +6,7 @@ import yaml
 from dotenv import load_dotenv
 
 from models.contribution import Contribution
-from utils import flatten_custom_fields
+from utils import flatten_custom_fields, traverse_into
 
 load_dotenv()
 
@@ -82,13 +82,6 @@ def check_filter(filter, **namespace):
         else:
             return getattr(head, key) == value
     return False
-
-
-def traverse_into(name, **namespace):
-    head = namespace[name[0]]
-    for path in name[1:]:
-        head = getattr(head, path)
-    return head
 
 
 def load_workflow_data(workflow):

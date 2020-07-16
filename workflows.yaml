@@ -5,6 +5,7 @@ scheduling:
   allow_list:
     contribution:
       - id
+      - link
       - title
       - contribution_type
       - score
@@ -20,7 +21,7 @@ scheduling:
           - agreement_cc_by_publication
           - agreement_email_contact
   output_type: spreadsheet
-  output_template: scheduling.csv
+  output_template: scheduling.yaml
 website:
   filter:
     contribution:

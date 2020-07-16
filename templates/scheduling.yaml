@@ -1,0 +1,16 @@
+mapping:
+  "ID": contribution.id
+  "Link": contribution.link
+  "Contribution type": contribution.contribution_type
+  "Title": contribution.title
+  "Score": contribution.score
+  "Multiple deliveries": contribution.questionnaire.multiple_deliveries
+  "Earliest delivery": contribution.questionnaire.earliest_delivery
+  "Latest delivery": contribution.questionnaire.latest_delivery
+  "Prerequisite knowledge": contribution.prerequisite_knowledge
+  "Language": contribution.questionnaire.language
+  "Contact": contribution.contact_email
+  "Agreement: recording": contribution.questionnaire.agreement_recording_publication
+  "Agreement: contact": contribution.questionnaire.agreement_email_contact
+  "Agreement: Zenodo": contribution.questionnaire.agreement_zenodo_publication
+  "Agreement: CC-BY": contribution.questionnaire.agreement_cc_by_publication

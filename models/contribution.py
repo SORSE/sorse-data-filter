@@ -3,14 +3,17 @@ from dataclasses import dataclass
 from typing import List
 
 import gspread
+import yaml
 
 from models import FilteredModel
 from models.person import Person
 from models.questionnaire import Questionnaire
 from utils import load_orcid_information, find_custom_fields_key, create_template, \
-    to_float
+    to_float, traverse_into
 
 ORCID_ID_PATTERN = re.compile(r"\d{4}-\d{4}-\d{4}-\d{4}")
+with open("./contributions.yaml") as stream:
+    CONTRIBUTION_MAPPING = yaml.safe_load(stream)
 
 
 def load_orcid_data(orcid_string):
@@ -44,6 +47,12 @@ class Contribution(FilteredModel):
     content: str
     state: str
     score: float
+
+    @property
+    def link(self):
+        if CONTRIBUTION_MAPPING is not None:
+            return CONTRIBUTION_MAPPING["mapping"][self.id]
+        return None
 
     @property
     def contribution_type(self):
@@ -88,15 +97,15 @@ class Contribution(FilteredModel):
 
     @classmethod
     def to_spreadsheet(cls, template=None, contributions=None):
-        import csv
-        template_renderer = create_template(template)
-        data = template_renderer.render(contributions=contributions)
+        with open(f"./templates/{template}", "r") as stream:
+            config_data = yaml.safe_load(stream)
+        header_data = config_data["mapping"]
         gc = gspread.oauth()
         sh = gc.create("Test", "1KLDFQ0VR7D16Ju-ir-TjlJXeNsqjNGge")
         worksheet = sh.get_worksheet(0)
-        csv_reader = csv.reader(data.splitlines(), delimiter=',')
-        for row in csv_reader:
-            worksheet.append_row(row)
+        worksheet.append_row(list(header_data.keys()))
+        for contribution in contributions:
+            worksheet.append_row([traverse_into(value.split("."), contribution=contribution) for value in header_data.values()])
 
     def to_md(self, template=None):
         contribution = self.to_json()
