@@ -2,12 +2,10 @@ import re
 from dataclasses import dataclass
 from typing import List
 
-import jinja2
-
 from models import FilteredModel
 from models.person import Person
 from models.questionnaire import Questionnaire
-from utils import load_orcid_information, find_custom_fields_key
+from utils import load_orcid_information, find_custom_fields_key, create_template
 
 ORCID_ID_PATTERN = re.compile(r"\d{4}-\d{4}-\d{4}-\d{4}")
 
@@ -66,7 +64,7 @@ class Contribution(FilteredModel):
                 json_content=author,
                 orcids=extended_orcids,
                 email_agreement=questionnaire.agreement_email_publication,
-                contact_email=contact_email)
+                contact_email=contact_email),
             if person is not None:
                 persons.append(person)
         return Contribution(
@@ -78,17 +76,14 @@ class Contribution(FilteredModel):
             questionnaire=questionnaire,
             contact_email=contact_email,
             title=json_content["title"],
-            content=json_content["content"]
+            content=json_content["content"],
         )
 
     def to_md(self, template=None):
         contribution = self.to_json()
 
-        templateLoader = jinja2.FileSystemLoader(searchpath="./templates")
-        templateEnv = jinja2.Environment(loader=templateLoader)
-        TEMPLATE_FILE = template
-        template = templateEnv.get_template(TEMPLATE_FILE)
-        return template.render(contribution=contribution)
+        template_renderer = create_template(template)
+        return template_renderer.render(contribution=contribution)
 
     def __repr__(self):
         return f"{self.__class__.__name__}(id='{self.id}', " \
