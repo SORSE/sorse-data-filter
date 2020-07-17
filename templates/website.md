@@ -4,19 +4,20 @@ title: "{{ contribution.title }}"
 authors:
 {%- for person in contribution.persons %}
     - {% if speaker == nil and person.is_speaker -%}{% set speaker = person %}&speaker {% endif -%}name: {{ person.title }} {{ person.first_name }} {{ person.last_name }}
-{%- if person.affiliation %} 
-      bio: {{ person.affiliation }} 
+{%- if person.affiliation %}
+      bio: {{ person.affiliation }}
 {%- endif %}
 {%- if person.email %}
       email: {{ person.email }}
 {%- endif %}
 {%- if person.orcid %}
-      orcid: {{ person.orcid }} 
+      orcid: {{ person.orcid }}
 {%- endif %}
 {%- if person.is_speaker %}
       is_speaker: true
 {%- endif %}
 {%- endfor %}
+id: {{ '%03d' % contibution.id }}
 author: *speaker
 {%- endif %}
 category: {{ contribution.contribution_type }}
