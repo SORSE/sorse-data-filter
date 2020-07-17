@@ -4,6 +4,15 @@ import jinja2
 import requests
 
 
+def load_allow_list(name: str, allow_list: Sequence) -> Sequence:
+    for elem in allow_list:
+        if isinstance(elem, dict):
+            first_key = list(elem.keys())[0]
+            if name == first_key:
+                return elem[name]
+    return []
+
+
 def traverse_into(name, **namespace):
     head = namespace[name[0]]
     for path in name[1:]:
