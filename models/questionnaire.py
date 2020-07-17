@@ -179,7 +179,7 @@ class PosterContribution(ContributionQuestions):
 class SoftwareContribution(ContributionQuestions):
     installation_instructions: str
     license: str
-    contribution_type = "software"
+    contribution_type = "software_demo"
 
     @classmethod
     def from_json(cls, allow_list: Sequence, json_content):
