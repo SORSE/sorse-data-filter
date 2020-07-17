@@ -20,6 +20,8 @@ scheduling:
           - agreement_recording_publication
           - agreement_cc_by_publication
           - agreement_email_contact
+          - contribution_questions:
+              - length
   output_type: spreadsheet
   output_template: scheduling.yaml
 website:
