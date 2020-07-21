@@ -1,14 +1,15 @@
 from dataclasses import dataclass
-from typing import Optional, Dict
+from typing import Optional, Dict, List
 
 from models import FilteredModel
+from models.affiliation import search_matching_affiliation, Affiliation
 from utils import search_matching_orcid, to_bool, to_str
 
 
 @dataclass
 class Person(FilteredModel):
     address: str
-    affiliation: str
+    affiliation_id: Optional[int]
     author_type:  str
     first_name: str
     last_name: str
@@ -18,10 +19,12 @@ class Person(FilteredModel):
     email: str
 
     @classmethod
-    def from_json(cls, allow_list, json_content, orcids: Dict[str, Dict], email_agreement=False, contact_email=None):
+    def from_json(cls, allow_list, json_content, orcids: Dict[str, Dict],
+                  affiliations: List[Affiliation], email_agreement=False, contact_email=None):
         first_name = json_content["first_name"]
         last_name = json_content["last_name"]
         orcid_id = search_matching_orcid(first_name, last_name, orcids)
+        affiliation_id = search_matching_affiliation(to_str(json_content["affiliation"]), affiliations)
         email = None
         if email_agreement:
             parsed_email = to_str(json_content["email"])
@@ -31,7 +34,7 @@ class Person(FilteredModel):
             allow_list=allow_list,
             first_name=to_str(json_content["first_name"]),
             last_name=to_str(json_content["last_name"]),
-            affiliation=to_str(json_content["affiliation"]),
+            affiliation_id=affiliation_id,
             address=to_str(json_content["address"]),
             author_type=json_content["author_type"],
             is_speaker=to_bool(json_content["is_speaker"]),
@@ -42,7 +45,7 @@ class Person(FilteredModel):
 
     def __repr__(self):
         return f"{self.__class__.__name__}(address='{self.address}', " \
-               f"affiliation='{self.affiliation}', author_type='{self.author_type}', " \
+               f"affiliation_id='{self.affiliation_id}', author_type='{self.author_type}', " \
                f"first_name='{self.first_name}', last_name='{self.last_name}', " \
                f"is_speaker='{self.is_speaker}', title='{self.title}', " \
                f"orcid='{self.orcid}')"

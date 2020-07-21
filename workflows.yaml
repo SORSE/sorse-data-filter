@@ -33,9 +33,11 @@ website:
       - title
       - content
       - contribution_type
+      - affiliations:
+        - name
       - persons:
         - title
-        - affiliation
+        - affiliation_id
         - first_name
         - last_name
         - orcid

@@ -4,9 +4,6 @@ title: "{{ contribution.title }}"
 authors:
 {%- for person in contribution.persons %}
     - {% if speaker == nil and person.is_speaker -%}{% set speaker = person %}&speaker {% endif -%}name: {{ person.title }} {{ person.first_name }} {{ person.last_name }}
-{%- if person.affiliation %} 
-      bio: {{ person.affiliation }} 
-{%- endif %}
 {%- if person.email %}
       email: {{ person.email }}
 {%- endif %}
@@ -16,7 +13,17 @@ authors:
 {%- if person.is_speaker %}
       is_speaker: true
 {%- endif %}
+{%- if person.affiliation_id is not none %}
+      affiliation: {{ person.affiliation_id + 1 }}
+{%- endif %}
 {%- endfor %}
+{%- if contribution.affiliations|length > 0 %}
+affiliations:
+{%- for affiliation in contribution.affiliations %}
+    - name: {{ affiliation.name }}
+      index: {{ loop.index }}
+{%- endfor %}
+{%- endif %}
 author: *speaker
 {%- endif %}
 category: {{ contribution.contribution_type }}

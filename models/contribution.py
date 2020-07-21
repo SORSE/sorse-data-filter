@@ -6,6 +6,7 @@ import gspread
 import yaml
 
 from models import FilteredModel
+from models.affiliation import Affiliation
 from models.person import Person
 from models.questionnaire import Questionnaire
 from utils import load_orcid_information, find_custom_fields_key, create_template, \
@@ -27,6 +28,7 @@ class Contribution(FilteredModel):
     submission_date: str
     acceptance_date: str
     persons: List[Person]
+    affiliations: List[Affiliation]
     questionnaire: Questionnaire
     contact_email: str
     title: str
@@ -48,22 +50,32 @@ class Contribution(FilteredModel):
     def from_json(cls, allow_list, json_content):
         person_allow_list = load_allow_list("persons", allow_list)
         questionnaire_allow_list = load_allow_list("questionnaire", allow_list)
-        custum_field_keys = list(json_content["custom_fields"].keys())
+        affiliation_allow_list = load_allow_list("affiliations", allow_list)
+        custom_field_keys = list(json_content["custom_fields"].keys())
         extended_orcids = load_orcid_data(json_content["custom_fields"].get(
-            find_custom_fields_key(custum_field_keys, "ORCID"), ""))
+            find_custom_fields_key(custom_field_keys, "ORCID"), ""))
 
         # load answers to other questions
         questionnaire = Questionnaire.from_json(questionnaire_allow_list, json_content)
         # get contact email
         contact_email = json_content["custom_fields"].get("Contact Email", None)
         # load authors and speakers
-        persons = []
         authors = json_content["persons"]
+        affiliations = set()
+        persons = []
+        for author in authors:
+            affiliation = Affiliation.from_json(
+                allow_list=affiliation_allow_list,
+                json_content=author)
+            if affiliation is not None:
+                affiliations.add(affiliation)
+        affiliations = sorted(affiliations)  # sort the affiliations and get a list
         for author in authors:
             person = Person.from_json(
                 allow_list=person_allow_list,
                 json_content=author,
                 orcids=extended_orcids,
+                affiliations=affiliations,
                 email_agreement=questionnaire.agreement_email_publication,
                 contact_email=contact_email)
             if person is not None:
@@ -73,6 +85,7 @@ class Contribution(FilteredModel):
             allow_list=allow_list,
             submission_date=json_content["submitted_dt"],
             acceptance_date=None,
+            affiliations=affiliations,
             persons=persons,
             questionnaire=questionnaire,
             contact_email=contact_email,
