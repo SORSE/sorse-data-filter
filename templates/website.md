@@ -3,7 +3,13 @@ title: "{{ contribution.title }}"
 {%- if contribution.persons|length > 0 %}
 authors:
 {%- for person in contribution.persons %}
-    - {% if speaker == nil and person.is_speaker -%}{% set speaker = person %}&speaker {% endif -%}name: {{ person.title }} {{ person.first_name }} {{ person.last_name }}
+{%- if speaker == nil and person.is_speaker %}
+{%- set speaker = person %}
+    - &speaker
+      name: {{ person.title }} {{ person.first_name }} {{ person.last_name }}
+{%- else %}
+    - name: {{ person.title }} {{ person.first_name }} {{ person.last_name }}
+{%- endif %}
 {%- if person.email %}
       email: {{ person.email }}
 {%- endif %}
