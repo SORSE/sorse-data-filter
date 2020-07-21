@@ -20,8 +20,8 @@ authors:
 {%- if contribution.affiliations|length > 0 %}
 affiliations:
 {%- for affiliation in contribution.affiliations %}
-     - name: {{ affiliation.name }}
-       index: {{ loop.index }}
+    - name: {{ affiliation.name }}
+      index: {{ loop.index }}
 {%- endfor %}
 {%- endif %}
 author: *speaker
