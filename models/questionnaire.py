@@ -120,7 +120,7 @@ class TalkContribution(ContributionQuestions):
     agreement_streaming: bool
     blog_post: bool
     blog_post_alternative: bool
-    contribution_type = "talk"
+    contribution_type = "talks"
 
     @classmethod
     def from_json(cls, allow_list: Sequence, json_content):
@@ -145,7 +145,7 @@ class TalkContribution(ContributionQuestions):
 class PanelContribution(ContributionQuestions):
     panelists: str
     advertising: bool
-    contribution_type = "panel"
+    contribution_type = "panels"
 
     @classmethod
     def from_json(cls, allow_list: Sequence, json_content):
@@ -163,7 +163,7 @@ class PanelContribution(ContributionQuestions):
 @dataclass
 class PosterContribution(ContributionQuestions):
     mentoring: bool
-    contribution_type = "poster"
+    contribution_type = "posters"
 
     @classmethod
     def from_json(cls, allow_list: Sequence, json_content):
@@ -180,7 +180,7 @@ class PosterContribution(ContributionQuestions):
 class SoftwareContribution(ContributionQuestions):
     installation_instructions: str
     license: str
-    contribution_type = "software_demo"
+    contribution_type = "software_demos"
 
     @classmethod
     def from_json(cls, allow_list: Sequence, json_content):
@@ -201,7 +201,7 @@ class WorkshopContriubtion(ContributionQuestions):
     maximum_number_participants: int
     helpers: bool
     delivery: str
-    contribution_type = "workshop"
+    contribution_type = "workshops"
 
     @classmethod
     def from_json(cls, allow_list: Sequence, json_content):
