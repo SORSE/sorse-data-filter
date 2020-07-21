@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Sequence,  ClassVar
 
 from models import FilteredModel
-from utils import to_bool, find_custom_fields_key, to_str
+from utils import to_bool, find_custom_fields_key, to_str, load_allow_list
 
 
 @dataclass
@@ -29,8 +29,9 @@ class Questionnaire(FilteredModel):
         # load contents of diversity  questions
         diversity_questions = DiversityQuestions.from_json(allow_list, custom_fields)
         # load contribution questions
+        contribution_question_allow_list = load_allow_list("contribution_questions", allow_list)
         contribution_questions = contribution_type_map.get(
-            json_content["submitted_contrib_type"]["name"]).from_json(allow_list, custom_fields)
+            json_content["submitted_contrib_type"]["name"]).from_json(contribution_question_allow_list, custom_fields)
         keys = list(custom_fields.keys())
         return Questionnaire(
             allow_list=allow_list,
@@ -219,5 +220,6 @@ class WorkshopContriubtion(ContributionQuestions):
 
 contribution_type_map = {
     "Talk": TalkContribution,
-    "Software Demonstration": SoftwareContribution
+    "Software Demonstration": SoftwareContribution,
+    "Discussion Session": PanelContribution,
 }

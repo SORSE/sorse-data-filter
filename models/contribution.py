@@ -2,33 +2,23 @@ import re
 from dataclasses import dataclass
 from typing import List
 
-import jinja2
+import gspread
+import yaml
 
 from models import FilteredModel
 from models.person import Person
 from models.questionnaire import Questionnaire
-from utils import load_orcid_information, find_custom_fields_key
+from utils import load_orcid_information, find_custom_fields_key, create_template, \
+    to_float, traverse_into, load_allow_list
 
 ORCID_ID_PATTERN = re.compile(r"\d{4}-\d{4}-\d{4}-\d{4}")
+with open("./contributions.yaml") as stream:
+    CONTRIBUTION_MAPPING = yaml.safe_load(stream)
 
 
 def load_orcid_data(orcid_string):
     matched_orcids = ORCID_ID_PATTERN.findall(orcid_string)
     return load_orcid_information(matched_orcids)
-
-
-def extract_allow_lists(allow_list):
-    person_allow_list = None
-    questionnaire_allow_list = None
-    for element in allow_list:
-        if isinstance(element, dict):
-            if "persons" in element:
-                person_allow_list = element["persons"]
-                continue
-            if "questionnaire" in element:
-                questionnaire_allow_list = element["questionnaire"]
-                continue
-    return person_allow_list, questionnaire_allow_list
 
 
 @dataclass
@@ -42,6 +32,13 @@ class Contribution(FilteredModel):
     title: str
     content: str
     state: str
+    score: float
+
+    @property
+    def link(self):
+        if CONTRIBUTION_MAPPING is not None:
+            return CONTRIBUTION_MAPPING["mapping"][self.id]
+        return None
 
     @property
     def contribution_type(self):
@@ -49,7 +46,8 @@ class Contribution(FilteredModel):
 
     @classmethod
     def from_json(cls, allow_list, json_content):
-        person_allow_list, questionnaire_allow_list = extract_allow_lists(allow_list)
+        person_allow_list = load_allow_list("persons", allow_list)
+        questionnaire_allow_list = load_allow_list("questionnaire", allow_list)
         custum_field_keys = list(json_content["custom_fields"].keys())
         extended_orcids = load_orcid_data(json_content["custom_fields"].get(
             find_custom_fields_key(custum_field_keys, "ORCID"), ""))
@@ -80,17 +78,27 @@ class Contribution(FilteredModel):
             contact_email=contact_email,
             title=json_content["title"],
             content=json_content["content"],
-            state=json_content["state"]
+            state=json_content["state"],
+            score=to_float(json_content["score"]),
         )
+
+    @classmethod
+    def to_spreadsheet(cls, template=None, contributions=None):
+        with open(f"./templates/{template}", "r") as stream:
+            config_data = yaml.safe_load(stream)
+        header_data = config_data["mapping"]
+        gc = gspread.oauth()
+        sh = gc.create("Test", "1KLDFQ0VR7D16Ju-ir-TjlJXeNsqjNGge")
+        worksheet = sh.get_worksheet(0)
+        worksheet.append_row(list(header_data.keys()))
+        for contribution in contributions:
+            worksheet.append_row([traverse_into(value.split("."), contribution=contribution) for value in header_data.values()])
 
     def to_md(self, template=None):
         contribution = self.to_json()
 
-        templateLoader = jinja2.FileSystemLoader(searchpath="./templates")
-        templateEnv = jinja2.Environment(loader=templateLoader)
-        TEMPLATE_FILE = template
-        template = templateEnv.get_template(TEMPLATE_FILE)
-        return template.render(contribution=contribution)
+        template_renderer = create_template(template)
+        return template_renderer.render(contribution=contribution)
 
     def __repr__(self):
         return f"{self.__class__.__name__}(id='{self.id}', " \

@@ -1,3 +1,29 @@
+scheduling:
+  filter:
+    contribution:
+      state: accepted
+  allow_list:
+    contribution:
+      - id
+      - link
+      - title
+      - contribution_type
+      - score
+      - contact_email
+      - questionnaire:
+          - language
+          - prerequisite_knowledge
+          - multiple_deliveries
+          - earliest_delivery
+          - latest_delivery
+          - agreement_zenodo_publication
+          - agreement_recording_publication
+          - agreement_cc_by_publication
+          - agreement_email_contact
+          - contribution_questions:
+              - length
+  output_type: spreadsheet
+  output_template: scheduling.yaml
 website:
   filter:
     contribution:

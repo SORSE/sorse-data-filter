@@ -14,11 +14,12 @@ that is required.
 The tool currently supports the following automatised workflows:
 
 * ``website``: export of Markdown-formatted data after acceptance to the website
+* ``scheduling``: export of data to a google drive to support the scheduling process
 
 Further workflows are planned including:
 
+* ``rejected``: export of information on rejected abstracts
 * ``mentoring``: export of data to a google drive to support the mentoring process
-* ``scheduling``: export of data to a google drive to support the scheduling process
 * ``statistics``: export of statistical data to a google drive
 
 # Configuring workflows
