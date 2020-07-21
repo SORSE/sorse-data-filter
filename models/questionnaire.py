@@ -213,13 +213,30 @@ class WorkshopContriubtion(ContributionQuestions):
         )
 
     def __repr__(self):
-        return  f"{self.__class__.__name__}(" \
-                f"maximum_number_participants='{self.maximum_number_participants}', " \
-                f"helpers='{self.helpers}', delivery='{self.delivery}')"
+        return f"{self.__class__.__name__}(" \
+               f"maximum_number_participants='{self.maximum_number_participants}', " \
+               f"helpers='{self.helpers}', delivery='{self.delivery}')"
+
+
+@dataclass
+class DiscussionContribution(ContributionQuestions):
+    contribution_type = "discussions"
+
+    @classmethod
+    def from_json(cls, allow_list: Sequence, json_content):
+        return DiscussionContribution(
+            allow_list=allow_list
+        )
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}()"
 
 
 contribution_type_map = {
     "Talk": TalkContribution,
     "Software Demonstration": SoftwareContribution,
-    "Discussion Session": PanelContribution,
+    "Discussion Session": DiscussionContribution,
+    "Panel": PanelContribution,
+    "Poster": PosterContribution,
+    "Workshop": WorkshopContriubtion,
 }
