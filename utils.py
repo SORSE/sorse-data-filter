@@ -4,6 +4,18 @@ import jinja2
 import requests
 
 
+TEXT_REPLACEMENTS = {
+    "‘": "'",
+    "’": "'",
+    "“": '"',
+    "”": '"',
+    "–": "--",
+}
+TITLE_REPLACEMENTS = {
+    "&": "and"
+}
+
+
 def load_allow_list(name: str, allow_list: Sequence) -> Sequence:
     for elem in allow_list:
         if isinstance(elem, dict):
@@ -40,6 +52,23 @@ def to_str(value: str, default: Optional[str] = None) -> Optional[str]:
     if value is None or "none" == value.lower():
         return default
     return value
+
+
+def to_text(value: str) -> Optional[str]:
+    """Function ensures proper encoding of entities"""
+    return replace_text(value, TEXT_REPLACEMENTS)
+
+
+def to_title(value:  str) -> Optional[str]:
+    """Function  ensures proper encoding of titles"""
+    return replace_text(value, TITLE_REPLACEMENTS)
+
+
+def replace_text(text: str, replacements: Dict[str, str]) -> Optional[str]:
+    if text:
+        for old, replacement in replacements.items():
+            text = text.replace(old, replacement)
+    return text
 
 
 def to_bool(value: str, default: bool = False) -> bool:
