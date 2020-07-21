@@ -120,7 +120,7 @@ class TalkContribution(ContributionQuestions):
     agreement_streaming: bool
     blog_post: bool
     blog_post_alternative: bool
-    contribution_type = "talk"
+    contribution_type = "talks"
 
     @classmethod
     def from_json(cls, allow_list: Sequence, json_content):
@@ -145,7 +145,7 @@ class TalkContribution(ContributionQuestions):
 class PanelContribution(ContributionQuestions):
     panelists: str
     advertising: bool
-    contribution_type = "panel"
+    contribution_type = "panels"
 
     @classmethod
     def from_json(cls, allow_list: Sequence, json_content):
@@ -163,7 +163,7 @@ class PanelContribution(ContributionQuestions):
 @dataclass
 class PosterContribution(ContributionQuestions):
     mentoring: bool
-    contribution_type = "poster"
+    contribution_type = "posters"
 
     @classmethod
     def from_json(cls, allow_list: Sequence, json_content):
@@ -180,7 +180,7 @@ class PosterContribution(ContributionQuestions):
 class SoftwareContribution(ContributionQuestions):
     installation_instructions: str
     license: str
-    contribution_type = "software_demo"
+    contribution_type = "software_demos"
 
     @classmethod
     def from_json(cls, allow_list: Sequence, json_content):
@@ -201,7 +201,7 @@ class WorkshopContriubtion(ContributionQuestions):
     maximum_number_participants: int
     helpers: bool
     delivery: str
-    contribution_type = "workshop"
+    contribution_type = "workshops"
 
     @classmethod
     def from_json(cls, allow_list: Sequence, json_content):
@@ -213,13 +213,30 @@ class WorkshopContriubtion(ContributionQuestions):
         )
 
     def __repr__(self):
-        return  f"{self.__class__.__name__}(" \
-                f"maximum_number_participants='{self.maximum_number_participants}', " \
-                f"helpers='{self.helpers}', delivery='{self.delivery}')"
+        return f"{self.__class__.__name__}(" \
+               f"maximum_number_participants='{self.maximum_number_participants}', " \
+               f"helpers='{self.helpers}', delivery='{self.delivery}')"
+
+
+@dataclass
+class DiscussionContribution(ContributionQuestions):
+    contribution_type = "discussions"
+
+    @classmethod
+    def from_json(cls, allow_list: Sequence, json_content):
+        return DiscussionContribution(
+            allow_list=allow_list
+        )
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}()"
 
 
 contribution_type_map = {
     "Talk": TalkContribution,
     "Software Demonstration": SoftwareContribution,
-    "Discussion Session": PanelContribution,
+    "Discussion Session": DiscussionContribution,
+    "Panel": PanelContribution,
+    "Poster": PosterContribution,
+    "Workshop": WorkshopContriubtion,
 }
