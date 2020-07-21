@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Sequence,  ClassVar
 
 from models import FilteredModel
-from utils import to_bool, find_custom_fields_key, to_str, load_allow_list
+from utils import to_bool, find_custom_fields_key, to_str, load_allow_list, to_text
 
 
 @dataclass
@@ -42,7 +42,8 @@ class Questionnaire(FilteredModel):
             agreement_email_publication=to_bool(custom_fields.get(find_custom_fields_key(keys, "contact email is published"), None)),
             language=to_str(custom_fields.get("Language", None)),
             topic_bazaar=to_bool(custom_fields.get("Topic Bazaar", None)),
-            prerequisite_knowledge=to_str(custom_fields.get("Prerequisite knowledge", None)),
+            prerequisite_knowledge=to_text(
+                to_str(custom_fields.get("Prerequisite knowledge", None))),
             relevance=to_str(custom_fields.get("Relevance to the community", None)),
             earliest_delivery=custom_fields.get("Earliest delivery date", None),
             latest_delivery=custom_fields.get("Latest delivery date", None),
@@ -186,7 +187,7 @@ class SoftwareContribution(ContributionQuestions):
     def from_json(cls, allow_list: Sequence, json_content):
         return SoftwareContribution(
             allow_list=allow_list,
-            installation_instructions=to_str(json_content.get("[SOFTWARE DEMOS ONLY] Installation instructions", None)),
+            installation_instructions=to_text(to_str(json_content.get("[SOFTWARE DEMOS ONLY] Installation instructions", None))),
             license=to_str(json_content.get("[SOFTWARE DEMOS ONLY] Software licence", None)),
         )
 

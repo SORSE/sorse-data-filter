@@ -10,7 +10,7 @@ from models.affiliation import Affiliation
 from models.person import Person
 from models.questionnaire import Questionnaire
 from utils import load_orcid_information, find_custom_fields_key, create_template, \
-    to_float, traverse_into, load_allow_list
+    to_float, traverse_into, load_allow_list, to_title, to_text
 
 ORCID_ID_PATTERN = re.compile(r"\d{4}-\d{4}-\d{4}-\d{4}")
 with open("./contributions.yaml") as stream:
@@ -89,8 +89,8 @@ class Contribution(FilteredModel):
             persons=persons,
             questionnaire=questionnaire,
             contact_email=contact_email,
-            title=json_content["title"],
-            content=json_content["content"],
+            title=to_title(json_content["title"]),
+            content=to_text(json_content["content"]),
             state=json_content["state"],
             score=to_float(json_content["score"]),
         )
