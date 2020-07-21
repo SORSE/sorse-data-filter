@@ -48,9 +48,9 @@ class Contribution(FilteredModel):
     def from_json(cls, allow_list, json_content):
         person_allow_list = load_allow_list("persons", allow_list)
         questionnaire_allow_list = load_allow_list("questionnaire", allow_list)
-        custum_field_keys = list(json_content["custom_fields"].keys())
+        custom_field_keys = list(json_content["custom_fields"].keys())
         extended_orcids = load_orcid_data(json_content["custom_fields"].get(
-            find_custom_fields_key(custum_field_keys, "ORCID"), ""))
+            find_custom_fields_key(custom_field_keys, "ORCID"), ""))
 
         # load answers to other questions
         questionnaire = Questionnaire.from_json(questionnaire_allow_list, json_content)
