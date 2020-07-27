@@ -3,6 +3,7 @@ from typing import Iterable, Optional, Dict, Sequence
 import jinja2
 import requests
 
+from filters import datetimeformat
 
 TEXT_REPLACEMENTS = {
     "‘": "'",
@@ -38,6 +39,7 @@ def traverse_into(name, **namespace):
 def create_template(template_file):
     templateLoader = jinja2.FileSystemLoader(searchpath="./templates")
     templateEnv = jinja2.Environment(loader=templateLoader)
+    templateEnv.filters['datetimeformat'] = datetimeformat
     template = templateEnv.get_template(template_file)
     return template
 
