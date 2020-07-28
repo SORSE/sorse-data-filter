@@ -11,5 +11,5 @@ def extendlinks(value):
     if value:
         for url_match in URL_PATTERN.finditer(value):
             url = url_match.group(0)
-            value = value.replace(url, f"<a href='{url}'>{url}</a>")
+            value = value.replace(url, f"<a href='{url}' class='truncated'>{url}</a>")
     return value
