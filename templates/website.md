@@ -37,13 +37,13 @@ category: {{ contribution.contribution_type }}
 language: {{ contribution.questionnaire.language }}
 {%- endif %}
 {%- if contribution.questionnaire.prerequisite_knowledge %}
-prerequisites: "{{ contribution.questionnaire.prerequisite_knowledge }}"
+prerequisites: "{{ contribution.questionnaire.prerequisite_knowledge | extendlinks }}"
 {%- endif %}
 {%- if contribution.questionnaire.contribution_questions.license %}
 license: {{ contribution.questionnaire.contribution_questions.license }}
 {%- endif %}
 {%- if contribution.questionnaire.contribution_questions.installation_instructions %}
-instructions: "{{ contribution.questionnaire.contribution_questions.installation_instructions }}"
+instructions: "{{ contribution.questionnaire.contribution_questions.installation_instructions | extendlinks }}"
 {%- endif %}
 {%- if contribution.questionnaire.contribution_questions.panelists %}
 panelists: {{ contribution.questionnaire.contribution_questions.panelists }}
