@@ -108,10 +108,11 @@ class Contribution(FilteredModel):
             worksheet.append_row([traverse_into(value.split("."), contribution=contribution) for value in header_data.values()])
 
     def to_md(self, template=None):
+        from sorse_data_filter import META
         contribution = self.to_json()
 
         template_renderer = create_template(template)
-        return template_renderer.render(contribution=contribution)
+        return template_renderer.render(contribution=contribution, meta=META)
 
     def __repr__(self):
         return f"{self.__class__.__name__}(id='{self.id}', " \

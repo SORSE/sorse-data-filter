@@ -6,9 +6,12 @@ import yaml
 from dotenv import load_dotenv
 
 from models.contribution import Contribution
+from models.meta import Meta
 from utils import flatten_custom_fields, traverse_into
 
 load_dotenv()
+
+META = Meta()
 
 
 @click.group()
