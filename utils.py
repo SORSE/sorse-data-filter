@@ -3,8 +3,7 @@ from typing import Iterable, Optional, Dict, Sequence
 import jinja2
 import requests
 
-from filter import extendlinks
-from filters import datetimeformat
+from filters import datetimeformat, extendlinks
 
 TEXT_REPLACEMENTS = {
     "‘": "'",
