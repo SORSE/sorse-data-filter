@@ -9,7 +9,5 @@ def datetimeformat(value, format='%Y-%m-%d'):
 
 def extendlinks(value):
     if value:
-        for url_match in URL_PATTERN.finditer(value):
-            url = url_match.group(0)
-            value = value.replace(url, f"<a href='{url}' class='truncated'>{url}</a>")
+        value = URL_PATTERN.sub(r"<a href='\g<0>' class='truncated'>\g<0></a>", value)
     return value
