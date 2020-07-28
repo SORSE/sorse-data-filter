@@ -1,3 +1,4 @@
+import re
 from typing import Iterable, Optional, Dict, Sequence
 
 import jinja2
@@ -15,6 +16,7 @@ TEXT_REPLACEMENTS = {
 TITLE_REPLACEMENTS = {
     "&": "and"
 }
+LINE_ENDINGS = re.compile(r"\s+\n")
 
 
 def load_allow_list(name: str, allow_list: Sequence) -> Sequence:
@@ -59,7 +61,11 @@ def to_str(value: str, default: Optional[str] = None) -> Optional[str]:
 
 def to_text(value: str) -> Optional[str]:
     """Function ensures proper encoding of entities"""
-    return replace_text(value, TEXT_REPLACEMENTS)
+    if value:
+        value = replace_text(value, TEXT_REPLACEMENTS)
+        # also ensure proper line endings
+        value = LINE_ENDINGS.sub("\n\n", value)
+    return value
 
 
 def to_title(value:  str) -> Optional[str]:
