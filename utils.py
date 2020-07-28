@@ -64,9 +64,7 @@ def to_text(value: str) -> Optional[str]:
     if value:
         value = replace_text(value, TEXT_REPLACEMENTS)
         # also ensure proper line endings
-        for match in LINE_ENDINGS.finditer(value):
-            ending = match.group(0)
-            value = value.replace(ending, "\n\n")
+        value = LINE_ENDINGS.sub("\n\n", value)
     return value
 
 
