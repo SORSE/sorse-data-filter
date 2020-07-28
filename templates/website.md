@@ -48,5 +48,7 @@ instructions: "{{ contribution.questionnaire.contribution_questions.installation
 {%- if contribution.questionnaire.contribution_questions.panelists %}
 panelists: {{ contribution.questionnaire.contribution_questions.panelists }}
 {%- endif %}
+date: {{ meta.current_date | datetimeformat("%Y-%m-%d") }}
 ---
 {{ contribution.content }}
+
