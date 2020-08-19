@@ -4,7 +4,7 @@ from typing import Iterable, Optional, Dict, Sequence
 import jinja2
 import requests
 
-from filters import datetimeformat, extendlinks
+from filters import datetimeformat, extendlinks, titlefilter
 
 TEXT_REPLACEMENTS = {
     "‘": "'",
@@ -43,6 +43,7 @@ def create_template(template_file):
     templateEnv = jinja2.Environment(loader=templateLoader)
     templateEnv.filters['extendlinks'] = extendlinks
     templateEnv.filters['datetimeformat'] = datetimeformat
+    templateEnv.filters['titlefilter'] = titlefilter
     template = templateEnv.get_template(template_file)
     return template
 
