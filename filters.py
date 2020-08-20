@@ -13,7 +13,7 @@ def extendlinks(value):
     return value
 
 
-def titlefilter(title, reject_list=["Mr.", "Ms.", "Mrs."]):
+def titlefilter(title, reject_list=("Mr.", "Ms.", "Mrs.")):
     if title in reject_list:
         title = ""
     return title
