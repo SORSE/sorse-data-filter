@@ -2,9 +2,11 @@
 title: "{{ contribution.title }}"
 {%- if contribution.persons|length > 0 %}
 authors:
+{%- set ns = namespace(speaker=false) -%}
+{%- set ns.speaker = None -%}
 {%- for person in contribution.persons %}
-{%- if speaker == nil and person.is_speaker %}
-{%- set speaker = person %}
+{%- if ns.speaker is none and person.is_speaker %}
+{%- set ns.speaker = person %}
     - &speaker
       name: {{ person.title }} {{ person.first_name }} {{ person.last_name }}
 {%- else %}
