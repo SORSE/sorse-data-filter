@@ -8,9 +8,9 @@ authors:
 {%- if ns.speaker is none and person.is_speaker %}
 {%- set ns.speaker = person %}
     - &speaker
-      name: {{ person.title }} {{ person.first_name }} {{ person.last_name }}
+      name: {{ (person.title | titlefilter + " " + person.first_name + " " + person.last_name) | trim }}
 {%- else %}
-    - name: {{ person.title }} {{ person.first_name }} {{ person.last_name }}
+    - name: {{ (person.title | titlefilter + " " + person.first_name + " " + person.last_name) | trim }}
 {%- endif %}
 {%- if person.email %}
       email: {{ person.email }}
